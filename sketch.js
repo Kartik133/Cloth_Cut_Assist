@@ -1,15 +1,23 @@
-let baleno;
+let baleno,balemeter;
+let count;
 let noofrolls;
 let submitBtn;
 let inputBoxes = [];
-let paragraph1,paragraph2,paragraph3,paragraph4,paragraph5,paragraph6;
-let printbtn,savebtn;
+let paragraph00,paragraph0,paragraph1,paragraph2,paragraph3,paragraph4,paragraph5,paragraph6;
+let printbtn,savebtn,updatebtn;
+let a=0;
 
 function setup() {
   noCanvas();
 
   baleno = createInput(0);
   baleno.position(150,60);
+  balemeter = createInput(0,"number");
+  balemeter.position(550,60);
+  paragraph0 = createP("Bale Metre");
+  paragraph0.position(420,47.5);
+  paragraph00 = createP("Actual Metre:- "+a);
+  paragraph00.position(800,47.5);
   paragraph1 = createP("Bale No.");
   paragraph1.position(20,47.5);
   noofrolls = createInput(0,"number");
@@ -44,15 +52,19 @@ function setup() {
   paragraph8.hide();
 
 
-  printbtn = createButton("print");
-  savebtn = createButton("save");
+  printbtn = createButton("Print");
+  savebtn = createButton("Save");
+  updatebtn = createButton("Auto-Fill");
+  updatebtn.position(20,140);
   savebtn.hide();
   printbtn.hide();
+  updatebtn.hide();
 
   // Button to generate textboxes
   submitBtn = createButton("Submit");
   submitBtn.position(150,140);
   submitBtn.mousePressed(createTextboxes);
+  updatebtn.mousePressed(update);
 }
 
 function createTextboxes() {
@@ -66,7 +78,7 @@ function createTextboxes() {
 
   inputBoxes = [];
 
-  let count = int(noofrolls.value());
+  count = int(noofrolls.value());
   
   for (let i = 0; i < 4*count; i++) {
     let box = createInput(0,"number");
@@ -92,6 +104,7 @@ function createTextboxes() {
 
   savebtn.show();
   printbtn.show();
+  updatebtn.show();
   savebtn.position(200,120+count*100);
   printbtn.position(200,160+count*100);
 }
@@ -137,4 +150,23 @@ function buttonClicked(clickedbtn) {
        }
      } 
    }
+}
+
+function update() {
+  a=0;
+  if(inputBoxes[1].value()>0 && inputBoxes[2].value()>0 && inputBoxes[3].value()>0) {
+   for(let i=1;i<count;i++) {
+     inputBoxes[5*i+1].value(inputBoxes[1].value());
+     inputBoxes[5*i+2].value(inputBoxes[2].value());
+     inputBoxes[5*i+3].value(inputBoxes[3].value());
+   } 
+  }
+
+  for(let i=0;i<count;i++) {
+    a=a+Number(inputBoxes[5*i].value());
+  }
+  paragraph00.hide();
+  paragraph00 = createP("Actual Metre:- "+a);
+  paragraph00.position(800,47.5);
+  paragraph00.show();
 }
