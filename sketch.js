@@ -6,9 +6,10 @@ let inputBoxes = [];
 let paragraph00,paragraph0,paragraph1,paragraph2,paragraph3,paragraph4,paragraph5,paragraph6;
 let printbtn,savebtn,updatebtn;
 let a=0;
+let results=[];
 
 function setup() {
-  noCanvas();
+  createCanvas(displayWidth,displayHeight);
 
   baleno = createInput(0);
   baleno.position(150,60);
@@ -65,6 +66,9 @@ function setup() {
   submitBtn.position(150,140);
   submitBtn.mousePressed(createTextboxes);
   updatebtn.mousePressed(update);
+  savebtn.mousePressed(()=>{
+    saveFrames("Cut_slip","png");
+  });
 }
 
 function createTextboxes() {
@@ -80,6 +84,11 @@ function createTextboxes() {
 
   count = int(noofrolls.value());
   
+  for(let i = 0;i<15*count;i++) {
+    let a = -1;
+    results.push(a);
+  }
+
   for (let i = 0; i < 4*count; i++) {
     let box = createInput(0,"number");
     inputBoxes.push(box);
@@ -110,6 +119,16 @@ function createTextboxes() {
 }
 
 function buttonClicked(clickedbtn) {
+
+  for(let i = 0;i<results.length;i++) {
+    if(results[i]!=-1) {
+      results[i].hide();
+    }// }else{
+    //   results[i].hide();
+    //   console.log("hide");
+    // }
+  }
+
   let maw = 0.1;
   let rs,p1,p2,p3;
   let display_count=0;
@@ -120,7 +139,11 @@ function buttonClicked(clickedbtn) {
   p2 = inputBoxes[5*clickedbtn-3].value();
   p3 = inputBoxes[5*clickedbtn-2].value();
 
-  console.log(rs,p1,p2,p3);
+  // push();
+  // noStroke();
+  // fill(255);
+  // rect(390,225+(clickedbtn-1)*100+(display_count-1)*20,1150,70);
+  // pop();
 
   for(let i = (rs/p1).toFixed();i>=0;i--) {
     let d1 = rs-i*p1;
@@ -128,21 +151,32 @@ function buttonClicked(clickedbtn) {
      for(let j = ((d11)/p2).toFixed( );j>=0;j--) {
        let d2 = d1-j*p2;
        let d22 = d2.toFixed(2);
-       if(((d22)%p3).toFixed(2)<=maw&& ((d22)%p3).toFixed(2)>=0) {
+       if(((d22)%p3).toFixed(2)<=maw && ((d22)%p3).toFixed(2)>=0) {
          display_count++;
          fill(0);
          let p = createP(i+" ("+(p1*i).toFixed(2)+")");
          p.position(400,195+(clickedbtn-1)*100+(display_count-1)*20);
+        
+         p.hide();
+         results[(clickedbtn-1)*15+(display_count-1)*5]=p;
          let q = createP(j+" ("+(p2*j).toFixed(2)+")");
          q.position(650,195+(clickedbtn-1)*100+(display_count-1)*20);
+         q.hide();
+         results[(clickedbtn-1)*15+(display_count-1)*5+1]=q;
          let r = createP(floor(d22/p3)+" ("+(p3*(floor(d22/p3))).toFixed(2)+")");
          r.position(900,195+(clickedbtn-1)*100+(display_count-1)*20);
+         r.hide();
+         results[(clickedbtn-1)*15+(display_count-1)*5+2]=r;
          let wastage = (rs-i*p1-j*p2-(floor(d22/p3)*p3));
          let tp = rs-wastage;
          let s = createP(wastage.toFixed(2));
          s.position(1250,195+(clickedbtn-1)*100+(display_count-1)*20);
+         s.hide();
+         results[(clickedbtn-1)*15+(display_count-1)*5+3]=s;
          let t = createP(tp.toFixed(2));
          t.position(1400,195+(clickedbtn-1)*100+(display_count-1)*20);
+         t.hide();
+         results[(clickedbtn-1)*15+(display_count-1)*5+4]=t;
          if(display_count==3) {
            i=0;  
            j=0;
@@ -150,6 +184,7 @@ function buttonClicked(clickedbtn) {
        }
      } 
    }
+   console.log(results);
 }
 
 function update() {
@@ -169,4 +204,17 @@ function update() {
   paragraph00 = createP("Actual Metre:- "+a);
   paragraph00.position(800,47.5);
   paragraph00.show();
+}
+
+function draw() {
+  background(255);
+  
+  for(let i = 0;i<results.length;i++) {
+    if(results[i]!=-1) {
+      results[i].show();
+    }// }else{
+    //   results[i].hide();
+    //   console.log("hide");
+    // }
+  }
 }
