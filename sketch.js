@@ -1,7 +1,15 @@
 let meter,cut,calculate,ans=[];
+let database,cutCount=0;
 
 function setup() {
   createCanvas(displayWidth,displayHeight);
+
+  database = firebase.database();
+  
+  database.ref("cutCounts").on("value",(data)=> {
+    cutCount = data.val();
+  });
+
   let pf1 = createP("METER");
   pf1.position(20,55);
   let pf2 = createP("CUT");
@@ -26,6 +34,12 @@ function draw() {
 }
 
 function answer() {
+  cutCount++;
+
+  database.ref("/").update({
+    cutCounts:cutCount
+  });
+
   for(let i=0;i<ans.length;i++) {
     ans[i].hide();
   }
